@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cloud-Based Resume Screening System</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #eaf2ff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 600px;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+h1 {
+    text-align: center;
+    color: #1769aa;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+}
+
+label {
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 13px;
+    background: #1769aa;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0d47a1;
+}
+
+#result {
+    display: none;
+    margin-top: 25px;
+    padding: 20px;
+    background: #f5f8ff;
+    border-radius: 10px;
+    border-left: 5px solid #1769aa;
+}
+
+.skill {
+    display: inline-block;
+    background: #dceeff;
+    color: #1769aa;
+    padding: 5px 8px;
+    margin: 3px;
+    border-radius: 5px;
+}
+
+.shortlisted {
+    color: green;
+    font-weight: bold;
+}
+
+.rejected {
+    color: red;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>☁️ Cloud-Based Resume Screening System</h1>
+
+<p class="subtitle">
+Resume Skill Matching System
+</p>
+
+<label>Candidate Name</label>
+<input type="text" id="name" placeholder="Enter candidate name">
+
+<label>Resume Skills</label>
+<input type="text" id="resume"
+placeholder="Python, Java, HTML, CSS, MongoDB">
+
+<label>Required Skills</label>
+<input type="text" id="required"
+placeholder="Python, Java, SQL, HTML, CSS">
+
+<button onclick="screenResume()">
+Screen Resume
+</button>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+function screenResume() {
+
+    let name = document.getElementById("name").value.trim();
+
+    let resume = document.getElementById("resume")
+        .value.toLowerCase();
+
+    let required = document.getElementById("required")
+        .value.toLowerCase();
+
+    let result = document.getElementById("result");
+
+    if (name === "" || resume === "" || required === "") {
+
+        alert("Please fill all fields.");
+        return;
+    }
+
+    let resumeSkills = resume
+        .split(",")
+        .map(skill => skill.trim());
+
+    let requiredSkills = required
+        .split(",")
+        .map(skill => skill.trim());
+
+    let matched = [];
+    let missing = [];
+
+    requiredSkills.forEach(skill => {
+
+        if (resumeSkills.includes(skill)) {
+            matched.push(skill);
+        } else {
+            missing.push(skill);
+        }
+
+    });
+
+    let percentage =
+        (matched.length / requiredSkills.length) * 100;
+
+    let status;
+
+    if (percentage >= 60) {
+        status = "SHORTLISTED";
+    } else {
+        status = "REJECTED";
+    }
+
+    result.style.display = "block";
+
+    result.innerHTML = `
+
+    <h2>📋 Screening Result</h2>
+
+    <p>
+    <b>Candidate Name:</b> ${name}
+    </p>
+
+    <p>
+    <b>Required Skills:</b><br>
+    ${displaySkills(requiredSkills)}
+    </p>
+
+    <p>
+    <b>Matched Skills:</b><br>
+    ${displaySkills(matched)}
+    </p>
+
+    <p>
+    <b>Missing Skills:</b><br>
+    ${displaySkills(missing)}
+    </p>
+
+    <p>
+    <b>Match Percentage:</b>
+    ${percentage.toFixed(2)}%
+    </p>
+
+    <p>
+    <b>Status:</b>
+
+    <span class="${
+        status === "SHORTLISTED"
+        ? "shortlisted"
+        : "rejected"
+    }">
+
+    ${status}
+
+    </span>
+    </p>
+
+    `;
+}
+
+function displaySkills(skills) {
+
+    if (skills.length === 0) {
+        return "None";
+    }
+
+    return skills.map(skill =>
+        `<span class="skill">${skill}</span>`
+    ).join("");
+
+}
+
+</script>
+
+</body>
+</html>
